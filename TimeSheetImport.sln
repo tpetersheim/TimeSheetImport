@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeSheetImporter", "TimeSheetImport\TimeSheetImporter.csproj", "{C3DC7196-D836-4605-B7F2-F76D9E472F69}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Taramon.Exceller", "Taramon.Exceller\Taramon.Exceller.csproj", "{64E62BF7-7B41-48D1-B4AB-5C25EC2CE237}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +15,10 @@ Global
 		{C3DC7196-D836-4605-B7F2-F76D9E472F69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3DC7196-D836-4605-B7F2-F76D9E472F69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3DC7196-D836-4605-B7F2-F76D9E472F69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64E62BF7-7B41-48D1-B4AB-5C25EC2CE237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64E62BF7-7B41-48D1-B4AB-5C25EC2CE237}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64E62BF7-7B41-48D1-B4AB-5C25EC2CE237}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64E62BF7-7B41-48D1-B4AB-5C25EC2CE237}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

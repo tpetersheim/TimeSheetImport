@@ -28,7 +28,6 @@ namespace TimeSheetImport
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 txtBackupFile.Text = openFileDialog.FileName;
-                TimeSheetBackup = new TimeSheetBackup(txtBackupFile.Text);
             }
         }
 
@@ -58,6 +57,30 @@ namespace TimeSheetImport
         private void btnCancel_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void btnSelectTimeSheetTemplate_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtTimeSheetTemplate.Text = openFileDialog.FileName;
+            }
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+                TimeSheetBackup = new TimeSheetBackup(txtBackupFile.Text);
+                TimeSheetExcel = new TimeSheetExcel(txtTimeSheetTemplate.Text);
+            TimeSheetExcel.WriteEntry(
+                new TimeSheetExcelEntry
+                {
+                    Date = DateTime.Now,
+                    Hours = new TimeSpan(3, 0, 0),
+                    Item = new TimeSheetExcelItem { Name = "Test Item" },
+                    Job = new TimeSheetExcelJob { Name = "Test Job" },
+                    Notes = "Test notes"
+                }
+            );
         }
     }
 }

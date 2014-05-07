@@ -81,6 +81,7 @@
             this.btnImport.TabIndex = 3;
             this.btnImport.Text = "Import";
             this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
             // btnCancel
             // 
@@ -131,6 +132,7 @@
             this.btnSelectTimeSheetTemplate.TabIndex = 9;
             this.btnSelectTimeSheetTemplate.Text = "Select";
             this.btnSelectTimeSheetTemplate.UseVisualStyleBackColor = true;
+            this.btnSelectTimeSheetTemplate.Click += new System.EventHandler(this.btnSelectTimeSheetTemplate_Click);
             // 
             // btnSelectOutputTimeSheet
             // 

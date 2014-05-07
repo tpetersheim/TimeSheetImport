@@ -47,7 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ExcelSpreadsheet.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
@@ -86,6 +85,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Taramon.Exceller\Taramon.Exceller.csproj">
+      <Project>{64e62bf7-7b41-48d1-b4ab-5c25ec2ce237}</Project>
+      <Name>Taramon.Exceller</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
