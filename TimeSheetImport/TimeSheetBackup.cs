@@ -73,13 +73,13 @@ namespace TimeSheetImport
                 }
                 catch (Exception ex)
                 {
-                    Utility.ShowError("There was an error processing the backup file. Select a valid file.", "Invalid file");
+                    MessageHelper.ShowError("There was an error processing the backup file. Select a valid file.", "Invalid file");
                     ShowError(ex);
                 }
             }
             else
             {
-                Utility.ShowError("The Time Sheet backup file does not exist.", "Invalid file");
+                MessageHelper.ShowError("The Time Sheet backup file does not exist.", "Invalid file");
             }
 
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using StringExtensions;
 using Taramon.Exceller;
 
 namespace TimeSheetImport
@@ -25,7 +26,7 @@ namespace TimeSheetImport
                 }
                 catch (Exception e)
                 {
-                    Utility.ShowError(string.Format("Worksheet named '{0}' could not be found.", WorksheetName), "Excel Template");
+                    MessageHelper.ShowError("Worksheet named '{0}' could not be found.".With(WorksheetName), "Excel Template");
                 }
             }
             else
@@ -34,10 +35,24 @@ namespace TimeSheetImport
 
         public void WriteEntry(TimeSheetExcelEntry entry)
         {
-            int nextEntryRow = findRowOfEntryHeaders();
+            int nextEntryRow = findRowOfEntryHeaders() + 1;
 
-            setCell("A" + nextEntryRow, entry.Date);
+            setCell("A" + nextEntryRow, entry.Date.ToString("MM/dd/yy"));
+            setCell("B" + nextEntryRow, getJobName(entry.Job.Name));
+            setCell("C" + nextEntryRow, getItemName(entry.Item.Name));
+            setCell("D" + nextEntryRow, entry.Notes);
+            setCell("E" + nextEntryRow, entry.Hours.Hours);
 
+        }
+
+        private object getItemName(string p)
+        {
+            throw new NotImplementedException();
+        }
+
+        private object getJobName(string p)
+        {
+            throw new NotImplementedException();
         }
 
         private int findRowOfNextEntry()
@@ -49,7 +64,7 @@ namespace TimeSheetImport
 
             for (nextEntry = rowOfEntryHeaders + 1; nextEntry <= lastEntryRow ; nextEntry++)
             {
-                if (string.IsNullOrEmpty(getCellString(string.Format("A{0}", nextEntry))))
+                if (string.IsNullOrEmpty(getCellString("A{0}".With(nextEntry.ToString()))))
                     break;
             }
 
@@ -84,7 +99,7 @@ namespace TimeSheetImport
             }
             catch (Exception e)
             {
-                Utility.ShowError(string.Format("Unable to set value '{0}' to cell '{1}'", value, cellAddress), "Bad cell value");
+                MessageHelper.ShowError(string.Format("Unable to set value '{0}' to cell '{1}'", value, cellAddress), "Bad cell value");
                 return false;
             }
         }
@@ -107,6 +122,31 @@ namespace TimeSheetImport
         public bool SetRatePerHour(decimal rate)
         {
             throw new NotImplementedException();
+        }
+
+        public bool SaveAs(string filePath)
+        {
+            bool success = true;
+            try
+            {
+                excelManager.SaveAs(filePath);
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowError(ex, "Saving File");
+                success = false;
+            }
+            return success;
+        }
+
+        public void Close()
+        {
+            excelManager.Close();
+        }
+
+        public bool AnyFileOpen
+        {
+            get { return excelManager.AnyFileOpen; }
         }
 
         private static class KeyCells

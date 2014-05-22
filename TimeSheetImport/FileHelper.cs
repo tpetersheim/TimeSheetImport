@@ -14,5 +14,10 @@ namespace TimeSheetImport
         public static string DefaultTimeSheetBackupFilePath { get { return Path.Combine(DefaultDropboxPath, "TimeSheet", "Backup"); } }
 
         public static string DefaultOutputTimeSheetFileName{ get { return DateTime.Now.ToString() + "TimeSheet.xlsx"; } }
+
+        public static bool IsValidFileName(string filename)
+        {
+            return !(filename.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0);
+        }
     }
 }

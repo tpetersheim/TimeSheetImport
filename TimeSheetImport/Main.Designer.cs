@@ -44,6 +44,7 @@
             this.dtStartDate = new System.Windows.Forms.DateTimePicker();
             this.dtEndDate = new System.Windows.Forms.DateTimePicker();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.SuspendLayout();
             // 
             // label1
@@ -142,6 +143,7 @@
             this.btnSelectOutputTimeSheet.TabIndex = 10;
             this.btnSelectOutputTimeSheet.Text = "Select";
             this.btnSelectOutputTimeSheet.UseVisualStyleBackColor = true;
+            this.btnSelectOutputTimeSheet.Click += new System.EventHandler(this.btnSelectOutputTimeSheet_Click);
             // 
             // label4
             // 
@@ -225,6 +227,7 @@
         private System.Windows.Forms.DateTimePicker dtStartDate;
         private System.Windows.Forms.DateTimePicker dtEndDate;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
     }
 }
 

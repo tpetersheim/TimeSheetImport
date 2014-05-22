@@ -8,22 +8,78 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TimeSheetImport.Properties
-{
-
-
+namespace TimeSheetImport.Properties {
+    
+    
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "11.0.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
-    {
-
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+        
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-
-        public static Settings Default
-        {
-            get
-            {
+        
+        public static Settings Default {
+            get {
                 return defaultInstance;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BackupDataFilePath {
+            get {
+                return ((string)(this["BackupDataFilePath"]));
+            }
+            set {
+                this["BackupDataFilePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TimeSheetTemplateFilePath {
+            get {
+                return ((string)(this["TimeSheetTemplateFilePath"]));
+            }
+            set {
+                this["TimeSheetTemplateFilePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OutputTimeSheetFolderPath {
+            get {
+                return ((string)(this["OutputTimeSheetFolderPath"]));
+            }
+            set {
+                this["OutputTimeSheetFolderPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("05/21/2014 19:48:00")]
+        public global::System.DateTime StartDate {
+            get {
+                return ((global::System.DateTime)(this["StartDate"]));
+            }
+            set {
+                this["StartDate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("05/21/2014 19:48:00")]
+        public global::System.DateTime EndDate {
+            get {
+                return ((global::System.DateTime)(this["EndDate"]));
+            }
+            set {
+                this["EndDate"] = value;
             }
         }
     }
