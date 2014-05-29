@@ -278,6 +278,20 @@ namespace Taramon.Exceller
 
         #region Functions to work with cell and range values
 
+        public void InsertRow(int row)
+        {
+            try
+            {
+                Range Line = (Range)(App.ActiveSheet as _Worksheet).Rows[row];
+                Line.Insert();
+            }
+            catch (Exception err)
+            {
+                throw new ExcelException(
+                    string.Format("Can not insert row at line {0}", row), err);
+            }
+        }
+
         public object GetValue(string cellAddress, Category category)
         {
             if (String.IsNullOrEmpty(cellAddress))

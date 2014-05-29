@@ -91,7 +91,7 @@ namespace TimeSheetImport
                     select task).ToList();
         }
 
-        public List<TimeSheetTag> GetTag(string taskId)
+        public List<TimeSheetTag> GetTags(string taskId)
         {
             return (from tag in Tags
                     join taskTag in TaskTags on tag.TagId equals taskTag.TagId
@@ -115,7 +115,7 @@ namespace TimeSheetImport
                     select project).First();
         }
 
-        public List<TimeSheetBreak> GetBreak(string taskId)
+        public List<TimeSheetBreak> GetBreaks(string taskId)
         {
             return (from brk in Breaks
                     where brk.TaskId == taskId
@@ -143,13 +143,5 @@ namespace TimeSheetImport
             MessageBox.Show("TimeSheetBackup runtime error: " + Environment.NewLine + Environment.NewLine 
                 + ex.ToString(), "Runtime Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
-
-    }
-
-    internal class TimeSheetEntry
-    {
-        public DateTime Start { get; set; }
-        public DateTime End { get; set; }
     }
 }

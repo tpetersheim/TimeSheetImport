@@ -74,7 +74,7 @@ namespace TimeSheetImport
         public int StatusParsed { get { return int.Parse(Status); } }
         [XmlElement("salary")]
         public string Salary { get; set; }
-        public double SalaryParsed { get { return int.Parse(Salary); } }
+        public double SalaryParsed { get { return double.Parse(Salary); } }
 
         [XmlElement("deleted")]
         public string Deleted { get; set; }

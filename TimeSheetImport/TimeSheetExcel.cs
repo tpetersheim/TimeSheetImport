@@ -12,7 +12,10 @@ namespace TimeSheetImport
     {
         private const string WorksheetName = "Worksheet";
         private const string AColumnHeader = "Date";
+        private const string denoteNoProjectNameFound = "**";
         private ExcelManager excelManager;
+        private List<TimeSheetExcelJob> timeSheetExcelJobs;
+        private List<TimeSheetExcelItem> timeSheetExcelItems;
 
         public TimeSheetExcel(string spreadsheetFilePath)
         {
@@ -31,28 +34,64 @@ namespace TimeSheetImport
             }
             else
                 throw new FileNotFoundException("TimeSheetExcel file not found");
+
+            parseTimeSheetExcelJobs();
+            parseTimeSheetExcelItems();
+        }
+
+        private char findFirstRowText(string textToFind)
+        {
+            //Find the Item List section
+            char column;
+
+            for (column = 'A'; column < 'K'; column++)
+            {
+                string cellVal = getCellString(string.Format("{0}1", column));
+                if (cellVal == textToFind)
+                    break;
+            }
+
+            return column;
         }
 
         public void WriteEntry(TimeSheetExcelEntry entry)
         {
-            int nextEntryRow = findRowOfEntryHeaders() + 1;
+            int nextEntryRow = findRowOfNextEntry();
+
+            var jobName = getJobName(entry.Job);
+            var itemName = getItemName(entry.Item);
 
             setCell("A" + nextEntryRow, entry.Date.ToString("MM/dd/yy"));
-            setCell("B" + nextEntryRow, getJobName(entry.Job.Name));
-            setCell("C" + nextEntryRow, getItemName(entry.Item.Name));
+            setCell("B" + nextEntryRow, (jobName != null ? jobName.Name : ""));
+            setCell("C" + nextEntryRow, (itemName != null ? itemName.Name : ""));
             setCell("D" + nextEntryRow, entry.Notes);
             setCell("E" + nextEntryRow, entry.Hours.Hours);
-
         }
 
-        private object getItemName(string p)
+        private TimeSheetExcelItem getItemName(string itemName)
         {
-            throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(itemName.Trim()))
+                return timeSheetExcelItems.Where(i => i.NameLowercase.Contains(itemName.ToLower())).FirstOrDefault();
+            else
+                return new TimeSheetExcelItem();
         }
 
-        private object getJobName(string p)
+        private TimeSheetExcelJob getJobName(string jobName)
         {
-            throw new NotImplementedException();
+            TimeSheetExcelJob job = null;
+            string jobNameLower = jobName.ToLower();
+            if (!string.IsNullOrEmpty(jobNameLower.Trim()))
+            {
+                job = timeSheetExcelJobs.Where(j => 
+                    j.NameLowercase.Contains(jobNameLower) ||
+                    jobNameLower.Contains(j.CodeStripLastTwoLower)
+                ).FirstOrDefault();
+            }
+
+            if (job == null)
+                job = new TimeSheetExcelJob() { Name = denoteNoProjectNameFound + jobName };
+
+            return job;
         }
 
         private int findRowOfNextEntry()
@@ -62,10 +101,14 @@ namespace TimeSheetImport
             const int maxEntryRows = 26;
             int lastEntryRow = maxEntryRows + rowOfEntryHeaders;
 
-            for (nextEntry = rowOfEntryHeaders + 1; nextEntry <= lastEntryRow ; nextEntry++)
+            for (nextEntry = rowOfEntryHeaders + 1; /*nextEntry <= lastEntryRow*/ ; nextEntry++)
             {
-                if (string.IsNullOrEmpty(getCellString("A{0}".With(nextEntry.ToString()))))
+                if (string.IsNullOrEmpty(getCellString("A{0}".With(nextEntry))))
+                {
+                    if (nextEntry > lastEntryRow)
+                        InsertRow(nextEntry);
                     break;
+                }
             }
 
             return nextEntry;
@@ -83,25 +126,6 @@ namespace TimeSheetImport
             }
 
             return entryHeaderRow;
-        }
-
-        private string getCellString(string cellAddress)
-        {
-            return excelManager.GetValue(cellAddress, Category.Formatted).ToString();
-        }
-
-        private bool setCell(string cellAddress, object value)
-        {
-            try
-            {
-                excelManager.SetValue(cellAddress, value);
-                return true;
-            }
-            catch (Exception e)
-            {
-                MessageHelper.ShowError(string.Format("Unable to set value '{0}' to cell '{1}'", value, cellAddress), "Bad cell value");
-                return false;
-            }
         }
 
         public bool SetPayPeriodStart(DateTime periodStart)
@@ -124,6 +148,60 @@ namespace TimeSheetImport
             throw new NotImplementedException();
         }
 
+        private void parseTimeSheetExcelItems()
+        {
+            timeSheetExcelItems = new List<TimeSheetExcelItem>();
+            char columnOfHeader = findFirstRowText(KeyCells.ItemList);
+
+            int row = 2;
+            string cellContents = getCellString("{0}{1}".With(columnOfHeader, row));
+            while (!string.IsNullOrEmpty(cellContents))
+            {
+                timeSheetExcelItems.Add(new TimeSheetExcelItem() { Name = cellContents });
+
+                row++;
+                cellContents = getCellString("{0}{1}".With(columnOfHeader, row));
+            }
+        }
+
+        private void parseTimeSheetExcelJobs()
+        {
+            timeSheetExcelJobs = new List<TimeSheetExcelJob>();
+            char columnOfHeader = findFirstRowText(KeyCells.JobInformation);
+
+            int row = 2;
+            string cellContents = getCellString("{0}{1}".With(columnOfHeader, row));
+            while (!string.IsNullOrEmpty(cellContents))
+            {
+                timeSheetExcelJobs.Add(new TimeSheetExcelJob() { Name = cellContents });
+
+                row++;
+                cellContents = getCellString("{0}{1}".With(columnOfHeader, row));
+            }
+        }
+        
+        // Wrappers
+
+        public void InsertRow(int row)
+        {
+            excelManager.InsertRow(row);
+        }
+
+        public void Close()
+        {
+            excelManager.Close();
+        }
+
+        public void Save()
+        {
+            excelManager.Save();
+        }
+
+        public bool AnyFileOpen
+        {
+            get { return excelManager.AnyFileOpen; }
+        }
+
         public bool SaveAs(string filePath)
         {
             bool success = true;
@@ -139,39 +217,32 @@ namespace TimeSheetImport
             return success;
         }
 
-        public void Close()
+        private string getCellString(string cellAddress)
         {
-            excelManager.Close();
+            return excelManager.GetValue(cellAddress, Category.Formatted).ToString();
         }
 
-        public bool AnyFileOpen
+        private bool setCell(string cellAddress, object value)
         {
-            get { return excelManager.AnyFileOpen; }
+            try
+            {
+                excelManager.SetValue(cellAddress, value);
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageHelper.ShowError("Unable to set value '{0}' to cell '{1}'".With(value, cellAddress), "Bad cell value");
+                return false;
+            }
         }
+        // End Wrappers
 
         private static class KeyCells
         {
             public static string Date { get { return "Date"; } }
             public static string PayPeriod { get { return "Pay Period"; } }
+            public static string JobInformation { get { return "Job Information"; } }
+            public static string ItemList { get { return "Item List"; } }
         }
-    }
-
-    public class TimeSheetExcelEntry
-    {
-        public DateTime Date { get; set; }
-        public TimeSheetExcelJob Job { get; set; }
-        public TimeSheetExcelItem Item { get; set; }
-        public string Notes { get; set; }
-        public TimeSpan Hours { get; set; }
-    }
-
-    public class TimeSheetExcelJob
-    {
-        public string Name { get; set; }
-    }
-
-    public class TimeSheetExcelItem
-    {
-        public string Name { get; set; }
     }
 }

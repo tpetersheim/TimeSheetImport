@@ -28,11 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.btnImport = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
+            this.btnClose = new System.Windows.Forms.Button();
             this.txtBackupFile = new System.Windows.Forms.TextBox();
             this.txtTimeSheetTemplate = new System.Windows.Forms.TextBox();
             this.txtOutputTimeSheet = new System.Windows.Forms.TextBox();
@@ -45,6 +46,7 @@
             this.dtEndDate = new System.Windows.Forms.DateTimePicker();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.progressBarImport = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // label1
@@ -84,15 +86,15 @@
             this.btnImport.UseVisualStyleBackColor = true;
             this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
-            // btnCancel
+            // btnClose
             // 
-            this.btnCancel.Location = new System.Drawing.Point(212, 270);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 4;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+            this.btnClose.Location = new System.Drawing.Point(212, 270);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(75, 23);
+            this.btnClose.TabIndex = 4;
+            this.btnClose.Text = "Close";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // txtBackupFile
             // 
@@ -169,6 +171,7 @@
             this.dtStartDate.Name = "dtStartDate";
             this.dtStartDate.Size = new System.Drawing.Size(197, 20);
             this.dtStartDate.TabIndex = 17;
+            this.dtStartDate.ValueChanged += new System.EventHandler(this.dtStartDate_ValueChanged);
             // 
             // dtEndDate
             // 
@@ -181,11 +184,21 @@
             // 
             this.openFileDialog.FileName = "openFileDialog";
             // 
+            // progressBarImport
+            // 
+            this.progressBarImport.Location = new System.Drawing.Point(212, 236);
+            this.progressBarImport.Name = "progressBarImport";
+            this.progressBarImport.Size = new System.Drawing.Size(156, 23);
+            this.progressBarImport.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBarImport.TabIndex = 19;
+            this.progressBarImport.Visible = false;
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(565, 305);
+            this.Controls.Add(this.progressBarImport);
             this.Controls.Add(this.dtEndDate);
             this.Controls.Add(this.dtStartDate);
             this.Controls.Add(this.label5);
@@ -196,11 +209,12 @@
             this.Controls.Add(this.txtOutputTimeSheet);
             this.Controls.Add(this.txtTimeSheetTemplate);
             this.Controls.Add(this.txtBackupFile);
-            this.Controls.Add(this.btnCancel);
+            this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnImport);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Main";
             this.Text = "Time Sheet Importer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
@@ -215,7 +229,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button btnImport;
-        private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.TextBox txtBackupFile;
         private System.Windows.Forms.TextBox txtTimeSheetTemplate;
         private System.Windows.Forms.TextBox txtOutputTimeSheet;
@@ -228,6 +242,7 @@
         private System.Windows.Forms.DateTimePicker dtEndDate;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        private System.Windows.Forms.ProgressBar progressBarImport;
     }
 }
 

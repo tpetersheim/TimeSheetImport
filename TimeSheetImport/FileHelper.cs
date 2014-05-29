@@ -17,7 +17,7 @@ namespace TimeSheetImport
 
         public static bool IsValidFileName(string filename)
         {
-            return !(filename.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0);
+            return !(string.IsNullOrEmpty(filename) || filename.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0);
         }
     }
 }
