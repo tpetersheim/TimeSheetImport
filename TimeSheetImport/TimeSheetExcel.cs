@@ -65,7 +65,7 @@ namespace TimeSheetImport
             setCell("B" + nextEntryRow, (jobName != null ? jobName.Name : ""));
             setCell("C" + nextEntryRow, (itemName != null ? itemName.Name : ""));
             setCell("D" + nextEntryRow, entry.Notes);
-            setCell("E" + nextEntryRow, entry.Hours.Hours);
+            setCell("E" + nextEntryRow, entry.Hours.TotalHours);
         }
 
         private TimeSheetExcelItem getItemName(string itemName)
@@ -88,6 +88,12 @@ namespace TimeSheetImport
                 ).FirstOrDefault();
             }
 
+            //Check specifically for Errands job and match it to Pete01 job
+            if (job == null && jobNameLower == "errands")
+            {
+                job = timeSheetExcelJobs.Where(j => j.Code == "Pete01").FirstOrDefault(); 
+            }
+
             if (job == null)
                 job = new TimeSheetExcelJob() { Name = denoteNoProjectNameFound + jobName };
 
@@ -98,10 +104,10 @@ namespace TimeSheetImport
         {
             int nextEntry;
             int rowOfEntryHeaders = findRowOfEntryHeaders();
-            const int maxEntryRows = 26;
-            int lastEntryRow = maxEntryRows + rowOfEntryHeaders;
+            const int lastEntryPadding = 3;
+            int lastEntryRow = findLastEntryRow() - lastEntryPadding;
 
-            for (nextEntry = rowOfEntryHeaders + 1; /*nextEntry <= lastEntryRow*/ ; nextEntry++)
+            for (nextEntry = rowOfEntryHeaders + 1; nextEntry <= 500; nextEntry++)
             {
                 if (string.IsNullOrEmpty(getCellString("A{0}".With(nextEntry))))
                 {
@@ -111,6 +117,9 @@ namespace TimeSheetImport
                 }
             }
 
+            if (nextEntry == 500)
+                MessageHelper.ShowError("Couldn't find where to write the next entry.", "Cannot write entries");
+
             return nextEntry;
         }
 
@@ -118,14 +127,34 @@ namespace TimeSheetImport
         {
             int entryHeaderRow;
 
-            for (entryHeaderRow = 1; entryHeaderRow < 100; entryHeaderRow++)
+            for (entryHeaderRow = 1; entryHeaderRow <= 100; entryHeaderRow++)
             {
                 string cellVal = getCellString(string.Format("A{0}", entryHeaderRow));
                 if (cellVal == KeyCells.Date)
                     break;
             }
 
+            if (entryHeaderRow == 100)
+                MessageHelper.ShowError("Couldn't find headers of timesheet entries.", "Cannot write entries");
+
             return entryHeaderRow;
+        }
+
+        private int findLastEntryRow()
+        {
+            int lastEntryRow;
+
+            for (lastEntryRow = 1; lastEntryRow < 100; lastEntryRow++)
+            {
+                string cellVal = getCellString(string.Format("D{0}", lastEntryRow));
+                if (cellVal == KeyCells.TotalHours)
+                    break;
+            }
+
+            if (lastEntryRow == 100)
+                MessageHelper.ShowError("Couldn't find the last entry.", "Cannot write entries");
+
+            return lastEntryRow - 1;
         }
 
         public bool SetPayPeriodStart(DateTime periodStart)
@@ -243,6 +272,7 @@ namespace TimeSheetImport
             public static string PayPeriod { get { return "Pay Period"; } }
             public static string JobInformation { get { return "Job Information"; } }
             public static string ItemList { get { return "Item List"; } }
+            public static string TotalHours { get { return "Total Hours"; } }
         }
     }
 }

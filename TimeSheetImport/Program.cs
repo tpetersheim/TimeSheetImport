@@ -8,6 +8,8 @@ namespace TimeSheetImport
 {
     static class Program
     {
+        public static Main MainForm;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -16,7 +18,8 @@ namespace TimeSheetImport
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Main());
+            MainForm = new Main();
+            Application.Run(MainForm);
         }
     }
 }

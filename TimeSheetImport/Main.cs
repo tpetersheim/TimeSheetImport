@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using StringExtensions;
+using System.Threading;
 
 namespace TimeSheetImport
 {
@@ -16,13 +17,14 @@ namespace TimeSheetImport
     {
         internal TimeSheetBackup TimeSheetBackup;
         internal TimeSheetExcel TimeSheetExcel;
+        private ImportProgress importProgress;
+        public CancellationTokenSource tokenSource;
 
         internal Main()
         {
             InitializeComponent();
 
             loadLastSettings();
-            //dtStartDate.Text = "2014/04/01";
         }
 
         private void loadLastSettings()
@@ -51,10 +53,6 @@ namespace TimeSheetImport
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
             saveLastSettings();
-            //if (TimeSheetExcel != null && TimeSheetExcel.AnyFileOpen)
-            //{
-            //    TimeSheetExcel.Close();
-            //}
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -82,14 +80,33 @@ namespace TimeSheetImport
 
         private void btnImport_Click(object sender, EventArgs e)
         {
+            performImport();
+        }
+
+        private async Task performImport()
+        {
             try
             {
-                toggleImportState(true);
                 if (validateInputs())
                 {
+                    startImport();
+
+                    tokenSource = new CancellationTokenSource();
+                    var token = tokenSource.Token;
+                    var progress = new Progress<ImportProgressReport>(r =>
+                    {
+                        importProgress.lblTotalEntries.Text = r.TotalEntries.ToString();
+                        importProgress.lblCurrentImportIndex.Text = (r.CurrentEntryIndex + 1).ToString();
+                        importProgress.progressBarImport.Maximum = r.TotalEntries;
+                        importProgress.progressBarImport.Value = r.CurrentEntryIndex + 1;
+
+                        importProgress.lblStatus.Text = r.CurrentEntryDescription;
+                    });
+
                     parseFiles();
-                    writeEntriesToTimeSheet();
-                    MessageHelper.ShowMessage("Done writing entries!!!");
+                    await Task.Run(() => writeEntriesToTimeSheet(progress, token), token);
+                    endImport();
+
                     TimeSheetExcel.Save();
                     TimeSheetExcel.Close();
                     //Process.Start(txtOutputTimeSheet.Text);
@@ -105,22 +122,23 @@ namespace TimeSheetImport
                 {
                     TimeSheetExcel.Close();
                 }
-                toggleImportState(false);
             }
         }
 
-        private void toggleImportState(bool turnOn)
+        private void startImport()
         {
-            if (turnOn)
-            {
-                this.Cursor = Cursors.WaitCursor;
-                progressBarImport.Visible = true;
-            }
-            else
-            {
-                this.Cursor = Cursors.Default;
-                progressBarImport.Visible = false;
-            }
+            this.Enabled = false;
+            //btnImport.Enabled = false;
+            importProgress = new ImportProgress();
+            importProgress.Show();
+        }
+
+        private void endImport()
+        {
+            importProgress.lblStatus.Text = "Import Complete!";
+            importProgress.btnOkay.Enabled = true;
+            importProgress.btnCancel.Enabled = false;
+            this.Enabled = true;
         }
 
         private bool validateInputs()
@@ -141,8 +159,14 @@ namespace TimeSheetImport
             }
             catch (Exception exception)
             {
-                MessageHelper.ShowError(exception, "Cannot create save file");
-                return false;
+                if (exception is System.IO.IOException)
+                {
+                    MessageHelper.ShowError("There was an error trying to save your file.  "
+                        + "Make sure the file open or being used by another process and try again.", "Cannot Save File");
+                    return false;
+                }
+                else
+                    MessageHelper.ShowError(exception, "Cannot create save file");
             }
 
             return true;
@@ -154,38 +178,80 @@ namespace TimeSheetImport
             TimeSheetBackup = new TimeSheetBackup(txtBackupFile.Text);
         }
 
-        private void writeEntriesToTimeSheet()
+        private void writeEntriesToTimeSheet(IProgress<ImportProgressReport> progress, CancellationToken token)
         {
-            List<TimeSheetTask> tasks = TimeSheetBackup.GetTasksWithinTimeframe(dtStartDate.Value, dtEndDate.Value);
-
-            progressBarImport.Maximum = tasks.Count;
-            progressBarImport.Value = 0;
-            foreach (TimeSheetTask task in tasks)
+            try
             {
-                var breaks = TimeSheetBackup.GetBreaks(task.TaskId);
-                TimeSpan breakTotal = TimeSpan.Parse("0");
-                foreach (var brk in breaks)
+                List<TimeSheetTask> tasks = TimeSheetBackup.GetTasksWithinTimeframe(dtStartDate.Value, dtEndDate.Value);
+
+                int taskIndex = 0;
+                int taskCount = tasks.Count;
+                foreach (TimeSheetTask task in tasks)
                 {
-                    breakTotal += (brk.EndDateParsed - brk.StartDateParsed);
+                    //Check for cancellation
+                    if (token.IsCancellationRequested)
+                    {
+                        if (progress != null)
+                            progress.Report(new ImportProgressReport()
+                            {
+                                CurrentEntryIndex = taskIndex,
+                                TotalEntries = taskCount,
+                                CurrentEntryDescription = "Import cancelled."
+                            });
+
+                        token.ThrowIfCancellationRequested();
+                    }
+
+                    var job = TimeSheetBackup.GetProject(task.TaskId);
+                    var item = TimeSheetBackup.GetTags(task.TaskId).FirstOrDefault();
+                    var jobName = (job != null ? job.NameTrimmed : "");
+                    var itemName = (item != null ? item.NameTrimmed : "");
+
+                    //Report progress
+                    if (progress != null)
+                    {
+                        progress.Report(new ImportProgressReport()
+                        {
+                            CurrentEntryIndex = taskIndex,
+                            TotalEntries = taskCount,
+                            CurrentEntryDescription = "{0:MM/dd/yy} : {1} - {2}".With(task.StartDateParsed, jobName, itemName)
+                        });
+                    }
+
+                    var tsEntry = new TimeSheetExcelEntry()
+                    {
+                        Date = task.StartDateParsed,
+                        Job = jobName,
+                        Item = itemName,
+                        Notes = task.DescriptionTrimmed,
+                        Hours = (task.EndDateParsed - task.StartDateParsed),
+                    };
+                    TimeSheetExcel.WriteEntry(tsEntry);
+
+                    //Write task's breaks as separate entries
+                    var breaks = TimeSheetBackup.GetBreaks(task.TaskId);
+                    foreach (var brk in breaks)
+                    {
+                        var tsBreakEntry = new TimeSheetExcelEntry()
+                        {
+                            Date = task.StartDateParsed,
+                            Job = jobName,
+                            Item = itemName,
+                            Notes = "BREAK: ".With(brk.Description),
+                            Hours = (brk.EndDateParsed - brk.StartDateParsed)
+                        };
+                        TimeSheetExcel.WriteEntry(tsBreakEntry);
+                    }
+
+                    taskIndex++;
                 }
-
-                var job = TimeSheetBackup.GetProject(task.TaskId);
-                var item = TimeSheetBackup.GetTags(task.TaskId).FirstOrDefault();
-                TimeSpan hours = (task.EndDateParsed - task.StartDateParsed) - breakTotal;
-                var notes = task.DescriptionTrimmed + (breakTotal.Hours > 0 ? "Break: {0} min".With(breakTotal.Minutes) : "");
-
-                var tsEntry = new TimeSheetExcelEntry()
-                {
-                    Date = task.StartDateParsed,
-                    Job = (job != null ? job.NameTrimmed : ""),
-                    Item = (item != null ? item.NameTrimmed : ""),
-                    Notes = notes,
-                    Hours = hours,
-                };
-                TimeSheetExcel.WriteEntry(tsEntry);
-
-                progressBarImport.Increment(1);
-                Application.DoEvents();
+            }
+            catch (Exception excep)
+            {
+                if (excep is OperationCanceledException)
+                    return;
+                else
+                    MessageHelper.ShowError(excep, "Problem Writing Entries");
             }
         }
 

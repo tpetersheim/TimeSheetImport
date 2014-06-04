@@ -46,13 +46,13 @@
             this.dtEndDate = new System.Windows.Forms.DateTimePicker();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.progressBarImport = new System.Windows.Forms.ProgressBar();
+            this.rchTxtInstructions = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(44, 122);
+            this.label1.Location = new System.Drawing.Point(44, 108);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(92, 13);
             this.label1.TabIndex = 0;
@@ -61,7 +61,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 148);
+            this.label2.Location = new System.Drawing.Point(6, 134);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(130, 13);
             this.label2.TabIndex = 1;
@@ -70,7 +70,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(18, 174);
+            this.label3.Location = new System.Drawing.Point(18, 160);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(118, 13);
             this.label3.TabIndex = 2;
@@ -98,28 +98,28 @@
             // 
             // txtBackupFile
             // 
-            this.txtBackupFile.Location = new System.Drawing.Point(142, 119);
+            this.txtBackupFile.Location = new System.Drawing.Point(142, 105);
             this.txtBackupFile.Name = "txtBackupFile";
             this.txtBackupFile.Size = new System.Drawing.Size(331, 20);
             this.txtBackupFile.TabIndex = 5;
             // 
             // txtTimeSheetTemplate
             // 
-            this.txtTimeSheetTemplate.Location = new System.Drawing.Point(142, 145);
+            this.txtTimeSheetTemplate.Location = new System.Drawing.Point(142, 131);
             this.txtTimeSheetTemplate.Name = "txtTimeSheetTemplate";
             this.txtTimeSheetTemplate.Size = new System.Drawing.Size(331, 20);
             this.txtTimeSheetTemplate.TabIndex = 6;
             // 
             // txtOutputTimeSheet
             // 
-            this.txtOutputTimeSheet.Location = new System.Drawing.Point(142, 171);
+            this.txtOutputTimeSheet.Location = new System.Drawing.Point(142, 157);
             this.txtOutputTimeSheet.Name = "txtOutputTimeSheet";
             this.txtOutputTimeSheet.Size = new System.Drawing.Size(331, 20);
             this.txtOutputTimeSheet.TabIndex = 7;
             // 
             // btnSelectBackupDataFile
             // 
-            this.btnSelectBackupDataFile.Location = new System.Drawing.Point(479, 117);
+            this.btnSelectBackupDataFile.Location = new System.Drawing.Point(479, 103);
             this.btnSelectBackupDataFile.Name = "btnSelectBackupDataFile";
             this.btnSelectBackupDataFile.Size = new System.Drawing.Size(75, 23);
             this.btnSelectBackupDataFile.TabIndex = 8;
@@ -129,7 +129,7 @@
             // 
             // btnSelectTimeSheetTemplate
             // 
-            this.btnSelectTimeSheetTemplate.Location = new System.Drawing.Point(479, 143);
+            this.btnSelectTimeSheetTemplate.Location = new System.Drawing.Point(479, 129);
             this.btnSelectTimeSheetTemplate.Name = "btnSelectTimeSheetTemplate";
             this.btnSelectTimeSheetTemplate.Size = new System.Drawing.Size(75, 23);
             this.btnSelectTimeSheetTemplate.TabIndex = 9;
@@ -139,7 +139,7 @@
             // 
             // btnSelectOutputTimeSheet
             // 
-            this.btnSelectOutputTimeSheet.Location = new System.Drawing.Point(479, 169);
+            this.btnSelectOutputTimeSheet.Location = new System.Drawing.Point(479, 155);
             this.btnSelectOutputTimeSheet.Name = "btnSelectOutputTimeSheet";
             this.btnSelectOutputTimeSheet.Size = new System.Drawing.Size(75, 23);
             this.btnSelectOutputTimeSheet.TabIndex = 10;
@@ -150,7 +150,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(78, 72);
+            this.label4.Location = new System.Drawing.Point(78, 58);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 11;
@@ -159,7 +159,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(81, 98);
+            this.label5.Location = new System.Drawing.Point(81, 84);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(55, 13);
             this.label5.TabIndex = 12;
@@ -167,7 +167,7 @@
             // 
             // dtStartDate
             // 
-            this.dtStartDate.Location = new System.Drawing.Point(142, 67);
+            this.dtStartDate.Location = new System.Drawing.Point(142, 53);
             this.dtStartDate.Name = "dtStartDate";
             this.dtStartDate.Size = new System.Drawing.Size(197, 20);
             this.dtStartDate.TabIndex = 17;
@@ -175,7 +175,7 @@
             // 
             // dtEndDate
             // 
-            this.dtEndDate.Location = new System.Drawing.Point(142, 93);
+            this.dtEndDate.Location = new System.Drawing.Point(142, 79);
             this.dtEndDate.Name = "dtEndDate";
             this.dtEndDate.Size = new System.Drawing.Size(197, 20);
             this.dtEndDate.TabIndex = 18;
@@ -184,21 +184,24 @@
             // 
             this.openFileDialog.FileName = "openFileDialog";
             // 
-            // progressBarImport
+            // rchTxtInstructions
             // 
-            this.progressBarImport.Location = new System.Drawing.Point(212, 236);
-            this.progressBarImport.Name = "progressBarImport";
-            this.progressBarImport.Size = new System.Drawing.Size(156, 23);
-            this.progressBarImport.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.progressBarImport.TabIndex = 19;
-            this.progressBarImport.Visible = false;
+            this.rchTxtInstructions.BackColor = System.Drawing.SystemColors.Control;
+            this.rchTxtInstructions.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rchTxtInstructions.Location = new System.Drawing.Point(12, 12);
+            this.rchTxtInstructions.Name = "rchTxtInstructions";
+            this.rchTxtInstructions.ReadOnly = true;
+            this.rchTxtInstructions.Size = new System.Drawing.Size(541, 35);
+            this.rchTxtInstructions.TabIndex = 20;
+            this.rchTxtInstructions.Text = "Import the backup data file from the Timesheet - Time Tracker Android application" +
+    ".  Export the entries an Excel time sheet template file.";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(565, 305);
-            this.Controls.Add(this.progressBarImport);
+            this.Controls.Add(this.rchTxtInstructions);
             this.Controls.Add(this.dtEndDate);
             this.Controls.Add(this.dtStartDate);
             this.Controls.Add(this.label5);
@@ -242,7 +245,7 @@
         private System.Windows.Forms.DateTimePicker dtEndDate;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
-        private System.Windows.Forms.ProgressBar progressBarImport;
+        private System.Windows.Forms.RichTextBox rchTxtInstructions;
     }
 }
 
