@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using StringExtensions;
 using System.Threading;
+using System.Diagnostics;
 
 namespace TimeSheetImport
 {
@@ -32,8 +33,8 @@ namespace TimeSheetImport
             txtBackupFile.Text = Properties.Settings.Default.BackupDataFilePath;
             txtTimeSheetTemplate.Text = Properties.Settings.Default.TimeSheetTemplateFilePath;
             txtOutputTimeSheet.Text = !string.IsNullOrEmpty(Properties.Settings.Default.OutputTimeSheetFolderPath) ? Path.Combine(Properties.Settings.Default.OutputTimeSheetFolderPath, "{0}.xls".With(DateTime.Now.ToString("yyyy-MM-dd"))) : Properties.Settings.Default.OutputTimeSheetFolderPath;
-            dtStartDate.Value = DateTime.Now.AddDays(-14);
-            dtEndDate.Value = DateTime.Now;
+            dtStartDate.Value = DateTime.Now.Date.AddDays(-14);
+            dtEndDate.Value = DateTime.Now.Date;
         }
 
         private void saveLastSettings()
@@ -109,7 +110,7 @@ namespace TimeSheetImport
 
                     TimeSheetExcel.Save();
                     TimeSheetExcel.Close();
-                    //Process.Start(txtOutputTimeSheet.Text);
+                    Process.Start(txtOutputTimeSheet.Text);
                 }
             }
             catch (Exception ex)
@@ -202,6 +203,7 @@ namespace TimeSheetImport
                         token.ThrowIfCancellationRequested();
                     }
 
+                    var breaks = TimeSheetBackup.GetBreaks(task.TaskId);
                     var job = TimeSheetBackup.GetProject(task.TaskId);
                     var item = TimeSheetBackup.GetTags(task.TaskId).FirstOrDefault();
                     var jobName = (job != null ? job.NameTrimmed : "");
@@ -218,18 +220,21 @@ namespace TimeSheetImport
                         });
                     }
 
+                    var hours = (task.EndDateParsed - task.StartDateParsed);
+                    var breakHours = TimeSpan.Parse("0");
+                    breaks.ForEach(b => breakHours += (b.EndDateParsed - b.StartDateParsed));
+                    hours -= breakHours;
                     var tsEntry = new TimeSheetExcelEntry()
                     {
                         Date = task.StartDateParsed,
                         Job = jobName,
                         Item = itemName,
                         Notes = task.DescriptionTrimmed,
-                        Hours = (task.EndDateParsed - task.StartDateParsed),
+                        Hours = hours,
                     };
                     TimeSheetExcel.WriteEntry(tsEntry);
 
                     //Write task's breaks as separate entries
-                    var breaks = TimeSheetBackup.GetBreaks(task.TaskId);
                     foreach (var brk in breaks)
                     {
                         var tsBreakEntry = new TimeSheetExcelEntry()

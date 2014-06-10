@@ -87,7 +87,7 @@ namespace TimeSheetImport
         public List<TimeSheetTask> GetTasksWithinTimeframe(DateTime startDate, DateTime endDate)
         {
             return (from task in Tasks
-                    where task.StartDateParsed >= startDate && task.EndDateParsed <= endDate
+                    where task.StartDateParsed.Date >= startDate && task.EndDateParsed.Date <= endDate
                     select task).ToList();
         }
 

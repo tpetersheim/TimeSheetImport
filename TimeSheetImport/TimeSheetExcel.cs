@@ -65,7 +65,7 @@ namespace TimeSheetImport
             setCell("B" + nextEntryRow, (jobName != null ? jobName.Name : ""));
             setCell("C" + nextEntryRow, (itemName != null ? itemName.Name : ""));
             setCell("D" + nextEntryRow, entry.Notes);
-            setCell("E" + nextEntryRow, entry.Hours.TotalHours);
+            setCell("E" + nextEntryRow, roundToNearestQuarter(entry.Hours.TotalHours));
         }
 
         private TimeSheetExcelItem getItemName(string itemName)
@@ -265,6 +265,11 @@ namespace TimeSheetImport
             }
         }
         // End Wrappers
+
+        private double roundToNearestQuarter(double value)
+        {
+            return Convert.ToDouble(Math.Round(value * 4, MidpointRounding.ToEven) / 4);
+        }
 
         private static class KeyCells
         {
