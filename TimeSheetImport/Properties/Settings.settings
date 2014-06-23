@@ -5,7 +5,7 @@
     <Setting Name="BackupDataFilePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="TimeSheetTemplateFilePath" Type="System.String" Scope="User">
+    <Setting Name="TimeSheetExcelFilePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="OutputTimeSheetFolderPath" Type="System.String" Scope="User">

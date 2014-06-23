@@ -38,12 +38,12 @@ namespace TimeSheetImport.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TimeSheetTemplateFilePath {
+        public string TimeSheetExcelFilePath {
             get {
-                return ((string)(this["TimeSheetTemplateFilePath"]));
+                return ((string)(this["TimeSheetExcelFilePath"]));
             }
             set {
-                this["TimeSheetTemplateFilePath"] = value;
+                this["TimeSheetExcelFilePath"] = value;
             }
         }
         

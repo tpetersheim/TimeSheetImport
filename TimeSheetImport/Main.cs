@@ -30,17 +30,17 @@ namespace TimeSheetImport
 
         private void loadLastSettings()
         {
-            txtBackupFile.Text = Properties.Settings.Default.BackupDataFilePath;
-            txtTimeSheetTemplate.Text = Properties.Settings.Default.TimeSheetTemplateFilePath;
+            txtBackupFile.Text = getLatestBackupDataFile(Properties.Settings.Default.BackupDataFilePath);
+            txtTimeSheetExcelFile.Text = Properties.Settings.Default.TimeSheetExcelFilePath;
             txtOutputTimeSheet.Text = !string.IsNullOrEmpty(Properties.Settings.Default.OutputTimeSheetFolderPath) ? Path.Combine(Properties.Settings.Default.OutputTimeSheetFolderPath, "{0}.xls".With(DateTime.Now.ToString("yyyy-MM-dd"))) : Properties.Settings.Default.OutputTimeSheetFolderPath;
-            dtStartDate.Value = DateTime.Now.Date.AddDays(-14);
+            dtStartDate.Value = DateTime.Now.Date.AddDays(-7);
             dtEndDate.Value = DateTime.Now.Date;
         }
 
         private void saveLastSettings()
         {
             Properties.Settings.Default.BackupDataFilePath = txtBackupFile.Text;
-            Properties.Settings.Default.TimeSheetTemplateFilePath = txtTimeSheetTemplate.Text;
+            Properties.Settings.Default.TimeSheetExcelFilePath = txtTimeSheetExcelFile.Text;
             try
             {
                 var outputFile = new FileInfo(txtOutputTimeSheet.Text);
@@ -49,6 +49,32 @@ namespace TimeSheetImport
             Properties.Settings.Default.StartDate = dtStartDate.Value;
             Properties.Settings.Default.EndDate = dtEndDate.Value;
             Properties.Settings.Default.Save();
+        }
+
+        private string getLatestBackupDataFile(string lastFilePath)
+        {
+            string latestFileBackup = "";
+
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(lastFilePath))
+                {
+                    DirectoryInfo directory = null;
+                    if (File.Exists(lastFilePath))
+                        directory = new DirectoryInfo(Directory.GetParent(lastFilePath).ToString());
+                    else if (Directory.Exists(lastFilePath))
+                        directory = new DirectoryInfo(lastFilePath);
+
+                    if (directory != null)
+                        latestFileBackup = directory.GetFiles().OrderByDescending(f => f.LastWriteTime).FirstOrDefault().FullName;
+                }
+            }
+            catch 
+            {
+                latestFileBackup = lastFilePath;
+            }
+
+            return latestFileBackup;
         }
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
@@ -63,19 +89,44 @@ namespace TimeSheetImport
 
         private void btnSelectBackupDataFile_Click(object sender, EventArgs e)
         {
-            openFileDialog.InitialDirectory = !string.IsNullOrWhiteSpace(txtBackupFile.Text) ? txtBackupFile.Text : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            setDirectoryAndFile(openFileDialog, txtBackupFile.Text);
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 txtBackupFile.Text = openFileDialog.FileName;
             }
         }
 
-        private void btnSelectTimeSheetTemplate_Click(object sender, EventArgs e)
+        private void btnSelectTimeSheetExcelFile_Click(object sender, EventArgs e)
         {
-            openFileDialog.InitialDirectory = !string.IsNullOrWhiteSpace(txtTimeSheetTemplate.Text) ? txtTimeSheetTemplate.Text : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            setDirectoryAndFile(openFileDialog, txtTimeSheetExcelFile.Text);
             if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                txtTimeSheetTemplate.Text = openFileDialog.FileName;
+                txtTimeSheetExcelFile.Text = openFileDialog.FileName;
+            }
+        }
+
+        private void btnSelectOutputTimeSheet_Click(object sender, EventArgs e)
+        {
+            saveFileDialog.Filter = "Excel Files(*.xls;)|*.xls|All files (*.*)|*.*";
+            setDirectoryAndFile(saveFileDialog, txtOutputTimeSheet.Text);
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                txtOutputTimeSheet.Text = saveFileDialog.FileName;
+            }
+        }
+
+        private void setDirectoryAndFile(FileDialog fileDialog, string filePath)
+        {
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                var fileName = Path.GetFileName(filePath);
+                fileDialog.InitialDirectory = !string.IsNullOrEmpty(fileName) ? Path.GetDirectoryName(filePath) : filePath;
+                fileDialog.FileName = !string.IsNullOrEmpty(Path.GetExtension(filePath)) ? Path.GetFileName(filePath) : "";
+            }
+            else
+            {
+                fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                fileDialog.FileName = "";
             }
         }
 
@@ -110,7 +161,7 @@ namespace TimeSheetImport
 
                     TimeSheetExcel.Save();
                     TimeSheetExcel.Close();
-                    Process.Start(txtOutputTimeSheet.Text);
+                    //Process.Start(txtOutputTimeSheet.Text);
                 }
             }
             catch (Exception ex)
@@ -156,7 +207,7 @@ namespace TimeSheetImport
             {
                 Directory.CreateDirectory(outputFileParentPath);
                 File.Delete(txtOutputTimeSheet.Text);
-                File.Copy(txtTimeSheetTemplate.Text, txtOutputTimeSheet.Text);
+                File.Copy(txtTimeSheetExcelFile.Text, txtOutputTimeSheet.Text);
             }
             catch (Exception exception)
             {
@@ -242,7 +293,7 @@ namespace TimeSheetImport
                             Date = task.StartDateParsed,
                             Job = jobName,
                             Item = itemName,
-                            Notes = "BREAK: ".With(brk.Description),
+                            Notes = "BREAK: {0}".With(brk.Description),
                             Hours = (brk.EndDateParsed - brk.StartDateParsed)
                         };
                         TimeSheetExcel.WriteEntry(tsBreakEntry);
@@ -260,27 +311,9 @@ namespace TimeSheetImport
             }
         }
 
-        private void btnSelectOutputTimeSheet_Click(object sender, EventArgs e)
-        {
-            saveFileDialog.Filter = "Excel Files(*.xls;)|*.xls|All files (*.*)|*.*";
-            if (!string.IsNullOrEmpty(txtOutputTimeSheet.Text))
-            {
-                saveFileDialog.InitialDirectory = txtOutputTimeSheet.Text;
-                var outputFile = new FileInfo(txtOutputTimeSheet.Text);
-                saveFileDialog.FileName = !string.IsNullOrEmpty(outputFile.Extension) ? outputFile.Name : "";
-            }
-            else
-                saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                txtOutputTimeSheet.Text = saveFileDialog.FileName;
-            }
-        }
-
         private void dtStartDate_ValueChanged(object sender, EventArgs e)
         {
-            dtEndDate.Value = dtStartDate.Value.AddDays(14);
+            dtEndDate.Value = dtStartDate.Value.AddDays(7);
         }
     }
 }

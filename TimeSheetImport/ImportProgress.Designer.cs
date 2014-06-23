@@ -93,9 +93,9 @@
             this.lblCurrentImportIndex.AutoSize = true;
             this.lblCurrentImportIndex.Location = new System.Drawing.Point(95, 9);
             this.lblCurrentImportIndex.Name = "lblCurrentImportIndex";
-            this.lblCurrentImportIndex.Size = new System.Drawing.Size(13, 13);
+            this.lblCurrentImportIndex.Size = new System.Drawing.Size(19, 13);
             this.lblCurrentImportIndex.TabIndex = 25;
-            this.lblCurrentImportIndex.Text = "0";
+            this.lblCurrentImportIndex.Text = "00";
             // 
             // label1
             // 
@@ -113,7 +113,7 @@
             this.lblTotalEntries.Name = "lblTotalEntries";
             this.lblTotalEntries.Size = new System.Drawing.Size(19, 13);
             this.lblTotalEntries.TabIndex = 27;
-            this.lblTotalEntries.Text = "20";
+            this.lblTotalEntries.Text = "00";
             // 
             // ImportProgress
             // 

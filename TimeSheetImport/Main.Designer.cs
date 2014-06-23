@@ -35,10 +35,10 @@
             this.btnImport = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
             this.txtBackupFile = new System.Windows.Forms.TextBox();
-            this.txtTimeSheetTemplate = new System.Windows.Forms.TextBox();
+            this.txtTimeSheetExcelFile = new System.Windows.Forms.TextBox();
             this.txtOutputTimeSheet = new System.Windows.Forms.TextBox();
             this.btnSelectBackupDataFile = new System.Windows.Forms.Button();
-            this.btnSelectTimeSheetTemplate = new System.Windows.Forms.Button();
+            this.btnSelectTimeSheetExcelFile = new System.Windows.Forms.Button();
             this.btnSelectOutputTimeSheet = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
@@ -61,11 +61,11 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(6, 134);
+            this.label2.Location = new System.Drawing.Point(24, 134);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(130, 13);
+            this.label2.Size = new System.Drawing.Size(112, 13);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Time Sheet Template File:";
+            this.label2.Text = "Time Sheet Excel File:";
             // 
             // label3
             // 
@@ -78,7 +78,7 @@
             // 
             // btnImport
             // 
-            this.btnImport.Location = new System.Drawing.Point(293, 270);
+            this.btnImport.Location = new System.Drawing.Point(321, 205);
             this.btnImport.Name = "btnImport";
             this.btnImport.Size = new System.Drawing.Size(75, 23);
             this.btnImport.TabIndex = 3;
@@ -88,7 +88,7 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(212, 270);
+            this.btnClose.Location = new System.Drawing.Point(240, 205);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
             this.btnClose.TabIndex = 4;
@@ -100,26 +100,26 @@
             // 
             this.txtBackupFile.Location = new System.Drawing.Point(142, 105);
             this.txtBackupFile.Name = "txtBackupFile";
-            this.txtBackupFile.Size = new System.Drawing.Size(331, 20);
+            this.txtBackupFile.Size = new System.Drawing.Size(387, 20);
             this.txtBackupFile.TabIndex = 5;
             // 
-            // txtTimeSheetTemplate
+            // txtTimeSheetExcelFile
             // 
-            this.txtTimeSheetTemplate.Location = new System.Drawing.Point(142, 131);
-            this.txtTimeSheetTemplate.Name = "txtTimeSheetTemplate";
-            this.txtTimeSheetTemplate.Size = new System.Drawing.Size(331, 20);
-            this.txtTimeSheetTemplate.TabIndex = 6;
+            this.txtTimeSheetExcelFile.Location = new System.Drawing.Point(142, 131);
+            this.txtTimeSheetExcelFile.Name = "txtTimeSheetExcelFile";
+            this.txtTimeSheetExcelFile.Size = new System.Drawing.Size(387, 20);
+            this.txtTimeSheetExcelFile.TabIndex = 6;
             // 
             // txtOutputTimeSheet
             // 
             this.txtOutputTimeSheet.Location = new System.Drawing.Point(142, 157);
             this.txtOutputTimeSheet.Name = "txtOutputTimeSheet";
-            this.txtOutputTimeSheet.Size = new System.Drawing.Size(331, 20);
+            this.txtOutputTimeSheet.Size = new System.Drawing.Size(387, 20);
             this.txtOutputTimeSheet.TabIndex = 7;
             // 
             // btnSelectBackupDataFile
             // 
-            this.btnSelectBackupDataFile.Location = new System.Drawing.Point(479, 103);
+            this.btnSelectBackupDataFile.Location = new System.Drawing.Point(535, 103);
             this.btnSelectBackupDataFile.Name = "btnSelectBackupDataFile";
             this.btnSelectBackupDataFile.Size = new System.Drawing.Size(75, 23);
             this.btnSelectBackupDataFile.TabIndex = 8;
@@ -127,19 +127,19 @@
             this.btnSelectBackupDataFile.UseVisualStyleBackColor = true;
             this.btnSelectBackupDataFile.Click += new System.EventHandler(this.btnSelectBackupDataFile_Click);
             // 
-            // btnSelectTimeSheetTemplate
+            // btnSelectTimeSheetExcelFile
             // 
-            this.btnSelectTimeSheetTemplate.Location = new System.Drawing.Point(479, 129);
-            this.btnSelectTimeSheetTemplate.Name = "btnSelectTimeSheetTemplate";
-            this.btnSelectTimeSheetTemplate.Size = new System.Drawing.Size(75, 23);
-            this.btnSelectTimeSheetTemplate.TabIndex = 9;
-            this.btnSelectTimeSheetTemplate.Text = "Select";
-            this.btnSelectTimeSheetTemplate.UseVisualStyleBackColor = true;
-            this.btnSelectTimeSheetTemplate.Click += new System.EventHandler(this.btnSelectTimeSheetTemplate_Click);
+            this.btnSelectTimeSheetExcelFile.Location = new System.Drawing.Point(535, 129);
+            this.btnSelectTimeSheetExcelFile.Name = "btnSelectTimeSheetExcelFile";
+            this.btnSelectTimeSheetExcelFile.Size = new System.Drawing.Size(75, 23);
+            this.btnSelectTimeSheetExcelFile.TabIndex = 9;
+            this.btnSelectTimeSheetExcelFile.Text = "Select";
+            this.btnSelectTimeSheetExcelFile.UseVisualStyleBackColor = true;
+            this.btnSelectTimeSheetExcelFile.Click += new System.EventHandler(this.btnSelectTimeSheetExcelFile_Click);
             // 
             // btnSelectOutputTimeSheet
             // 
-            this.btnSelectOutputTimeSheet.Location = new System.Drawing.Point(479, 155);
+            this.btnSelectOutputTimeSheet.Location = new System.Drawing.Point(535, 155);
             this.btnSelectOutputTimeSheet.Name = "btnSelectOutputTimeSheet";
             this.btnSelectOutputTimeSheet.Size = new System.Drawing.Size(75, 23);
             this.btnSelectOutputTimeSheet.TabIndex = 10;
@@ -191,26 +191,26 @@
             this.rchTxtInstructions.Location = new System.Drawing.Point(12, 12);
             this.rchTxtInstructions.Name = "rchTxtInstructions";
             this.rchTxtInstructions.ReadOnly = true;
-            this.rchTxtInstructions.Size = new System.Drawing.Size(541, 35);
+            this.rchTxtInstructions.Size = new System.Drawing.Size(598, 35);
             this.rchTxtInstructions.TabIndex = 20;
             this.rchTxtInstructions.Text = "Import the backup data file from the Timesheet - Time Tracker Android application" +
-    ".  Export the entries an Excel time sheet template file.";
+    ".  \nExport the entries an Excel time sheet template file.";
             // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(565, 305);
+            this.ClientSize = new System.Drawing.Size(622, 240);
             this.Controls.Add(this.rchTxtInstructions);
             this.Controls.Add(this.dtEndDate);
             this.Controls.Add(this.dtStartDate);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.btnSelectOutputTimeSheet);
-            this.Controls.Add(this.btnSelectTimeSheetTemplate);
+            this.Controls.Add(this.btnSelectTimeSheetExcelFile);
             this.Controls.Add(this.btnSelectBackupDataFile);
             this.Controls.Add(this.txtOutputTimeSheet);
-            this.Controls.Add(this.txtTimeSheetTemplate);
+            this.Controls.Add(this.txtTimeSheetExcelFile);
             this.Controls.Add(this.txtBackupFile);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.btnImport);
@@ -218,6 +218,8 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximumSize = new System.Drawing.Size(638, 278);
+            this.MinimumSize = new System.Drawing.Size(638, 278);
             this.Name = "Main";
             this.Text = "Time Sheet Importer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Main_FormClosing);
@@ -234,10 +236,10 @@
         private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.TextBox txtBackupFile;
-        private System.Windows.Forms.TextBox txtTimeSheetTemplate;
+        private System.Windows.Forms.TextBox txtTimeSheetExcelFile;
         private System.Windows.Forms.TextBox txtOutputTimeSheet;
         private System.Windows.Forms.Button btnSelectBackupDataFile;
-        private System.Windows.Forms.Button btnSelectTimeSheetTemplate;
+        private System.Windows.Forms.Button btnSelectTimeSheetExcelFile;
         private System.Windows.Forms.Button btnSelectOutputTimeSheet;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
