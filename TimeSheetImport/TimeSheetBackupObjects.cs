@@ -23,10 +23,26 @@ namespace TimeSheetImport
         public string Description { get; set; }
         [XmlElement("startDate")]
         public string StartDate { get; set; }
-        public DateTime StartDateParsed { get { return DateTime.Parse(StartDate); } }
+        public DateTime StartDateParsed {
+            get
+            {
+                DateTime dateParsed = DateTime.MinValue;
+                if (!string.IsNullOrEmpty(StartDate))
+                    DateTime.TryParse(StartDate, out dateParsed);
+                return dateParsed;
+            }
+        }
         [XmlElement("endDate")]
         public string EndDate { get; set; }
-        public DateTime EndDateParsed { get { return DateTime.Parse(EndDate); } }
+        public DateTime EndDateParsed {
+            get
+            {
+                DateTime dateParsed = DateTime.MinValue;
+                if (!string.IsNullOrEmpty(EndDate))
+                    DateTime.TryParse(EndDate, out dateParsed);
+                return dateParsed;
+            }
+        }
 
         [XmlElement("deleted")]
         public string Deleted { get; set; }
@@ -48,7 +64,15 @@ namespace TimeSheetImport
         public string Text { get; set; }
         [XmlElement("startDate")]
         public string DateAndTime { get; set; }
-        public DateTime DateAndTimeParsed { get { return DateTime.Parse(DateAndTime); } }
+        public DateTime DateAndTimeParsed {
+            get
+            {
+                DateTime dateParsed = DateTime.MinValue;
+                if (!string.IsNullOrEmpty(DateAndTime))
+                    DateTime.TryParse(DateAndTime, out dateParsed);
+                return dateParsed;
+            }
+        }
 
         [XmlElement("deleted")]
         public string Deleted { get; set; }
@@ -137,10 +161,26 @@ namespace TimeSheetImport
         public string Location { get; set; }
         [XmlElement("startDate")]
         public string StartDate { get; set; }
-        public DateTime StartDateParsed { get { return DateTime.Parse(StartDate); } }
+        public DateTime StartDateParsed { 
+            get 
+            {
+                DateTime dateParsed = DateTime.MinValue;
+                if (!string.IsNullOrEmpty(StartDate))
+                    DateTime.TryParse(StartDate, out dateParsed);
+                return dateParsed; 
+            } 
+        }
         [XmlElement("endDate")]
         public string EndDate { get; set; }
-        public DateTime EndDateParsed { get { return DateTime.Parse(EndDate); } }
+        public DateTime EndDateParsed {
+            get
+            {
+                DateTime dateParsed = DateTime.MinValue;
+                if (!string.IsNullOrEmpty(EndDate))
+                    DateTime.TryParse(EndDate, out dateParsed);
+                return dateParsed;
+            }
+        }
 
 
         [XmlElement("paid")]
